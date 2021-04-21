@@ -1,7 +1,7 @@
 //Batch Class that runs in a scheduled manner at 12 AM daily and pick the Today CaseRecords
 global class BatchSync implements DataBase.Batchable<Case>,Database.AllowCallOuts{
 global DataBase.QueryLocator start(DataBase.BatchableContext Bc){
-	string query = 'Select Id,AgentId__c,ClosedFlag__c,secretKey__c from Case where LastModfiedDate> Yerterday()';
+	string query = 'Select Id,AgentId__c,ClosedFlag__c,secretKey__c from Case where LastModfiedDate> Yerterday() and ClosedFlag__c =true';
 	return DataBase.getQueryLocator(query);
 }
 //exceute method to pick the case records in the batch of 200
@@ -54,7 +54,7 @@ global void execute(DateBase.BatchableContext BC,List<Case> scope){
 					//inserting the LogObject
 					LogObject obj = new LogObject();
 					obj.error = sJson.error;
-					obj.CaseId= case.Id;
+					obj.CaseId__c= case.Id;
 					obj.Error_Type__c = 'WorkForce Integration Error';
 					obj.Logged_In_User__c = Userinfo.getUserId();
 					lstLogObject.add(obj);
